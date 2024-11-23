@@ -50,6 +50,9 @@ struct AdvancedSettingsPane: View {
                 activeScreenWidthToggle
                 activeScreenWidthSlider
             }
+            IceSection("Permissions") {
+                allPermissions
+            }
         }
     }
 
@@ -168,6 +171,28 @@ struct AdvancedSettingsPane: View {
                         maxSliderLabelWidth = max(maxSliderLabelWidth, frame.width)
                     }
             }
+        }
+    }
+
+    private var allPermissions: some View {
+        ForEach(appState.permissionsManager.allPermissions) { permission in
+            IceLabeledContent {
+                if permission.hasPermission {
+                    Label {
+                        Text("Permission Granted")
+                    } icon: {
+                        Image(systemName: "checkmark.circle")
+                            .foregroundStyle(.green)
+                    }
+                } else {
+                    Button("Grant Permission") {
+                        permission.performRequest()
+                    }
+                }
+            } label: {
+                Text(permission.title)
+            }
+            .frame(height: 22)
         }
     }
 }
